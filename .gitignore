@@ -15,3 +15,14 @@ ssmstudy_parent/study_web/.DS_Store
 ssmstudy_parent/study_web/study_web.iml
 ssmstudy_parent/study_web/target/
 .DS_Store
+vue_SSM/LICENSE
+vue_SSM/config
+vue_SSM/package-lock.json
+vue_SSM/dist
+vue_SSM/.babelrc 
+vue_SSM/build
+vue_SSM/.gitignore
+vue_SSM/node_modules
+vue_SSM/static
+vue_SSM/.idea/
+vue_SSM/.idea/workspace.xml
