@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.study.mapper.DepartmentMapper">
+    <!--保存部门-->
+    <insert id="save" parameterType="Department" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        insert into t_department
+        (sn,name,dirPath,state,manager_id,parent_id,tenant_id) values
+        (#{sn},#{name},#{dirPath},#{state},#{manager.id},#{parent.id},#{tenant.id})
+    </insert>
+
+    <!--移除部门-->
+    <delete id="remove" parameterType="long">
+        delete from t_department where id = #{id}
+    </delete>
+
+    <!--修改部门-->
+    <update id="update" parameterType="Department">
+        update t_department set
+        sn = #{sn},name = #{name},dirPath = #{dirPath},state = #{state},
+        manager_id = #{manager.id}, parent_id = #{parent.id}, tenant_id = #{tenant.id}
+        where id = #{id}
+    </update>
+
+    <!--通过id查找部门-->
+    <select id="loadById" parameterType="long" resultType="Department">
+        select * from t_department where id = #{id}
+    </select>
+
+    <!--加载所有部门-->
+    <select id="loadAll" resultType="Department">
+        select * from t_department
+    </select>
+
+
+    <!--高级查询-->
+    <!--把第一个and变成where-->
+    <!--keywords 作用于sn 和 name字段-->
+    <sql id="whereSql">
+        <where>
+            <if test="keywords != null and keywords != ''">
+                and (sn like concat('%',#{keywords},'%') or name like concat('%',#{keywords},'%'))
+            </if>
+        </where>
+    </sql>
+    <select id="queryCount" parameterType="DepartmentQuery" resultType="long">
+        select count(*) from t_department
+        <include refid="whereSql"/>
+    </select>
+
+
+    <select id="queryData" parameterType="DepartmentQuery" resultType="Department">
+        select * from t_department
+        <include refid="whereSql"/>
+        limit #{start},#{pageSize}
+    </select>
+</mapper>

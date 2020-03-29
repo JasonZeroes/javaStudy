@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.study.mapper.EmployeeMapper">
+
+    <!--保存员工-->
+    <insert id="save" parameterType="Employee" useGeneratedKeys="true"
+    keyColumn="id" keyProperty="id">
+        INSERT into t_employee
+        (username,password,realName,tel,email,inputTime,state,dept_id,tenant_id,type) values
+        (#{username},#{password},#{realName},#{tel},#{email},
+        #{inputTime},#{state},#{dept.id},#{tenant.id},#{type})
+    </insert>
+
+    <!--移除员工-->
+    <delete id="remove" parameterType="long">
+        delete from t_employee where id = #{id}
+    </delete>
+
+    <!--修改员工-->
+    <update id="update" parameterType="Department">
+        update t_employee set
+        username = #{username},password = #{password},realName = #{realName},
+        tel = #{tel},email = #{email}, inputTime = #{inputTime}, state = #{state},
+        dept_id = #{dept.id},tenant_id = #{tenant.id},type=#{type}
+        where id = #{id}
+    </update>
+
+    <!--通过id加载员工-->
+    <select id="loadById" parameterType="long" resultType="Employee">
+        select * from t_employee where id = #{id}
+    </select>
+
+    <!--加载所有员工-->
+    <select id="loadAll" resultType="Employee">
+        select * from t_employee
+    </select>
+
+    <!--&lt;!&ndash;查询条件&ndash;&gt;-->
+    <!--<sql id="whereSql">-->
+    <!--    <where>-->
+    <!--        <if test="keywords!=null and keywords!=''">-->
+    <!--            and name like concat('%',#{keywords},'%')-->
+    <!--        </if>-->
+    <!--    </where>-->
+    <!--</sql>-->
+
+    <!--<select id="queryCount" parameterType="EmployeeQuery" resultType="long">-->
+    <!--    select count(*) from t_employee-->
+    <!--    <include refid="whereSql"/>-->
+    <!--</select>-->
+
+    <!--<select id="queryData" parameterType="EmployeeQuery" resultType="Employee">-->
+    <!--    select * from t_employee-->
+    <!--    <include refid="whereSql"/>-->
+    <!--    limit #{start},#{pageSize}-->
+    <!--</select>-->
+
+</mapper>
