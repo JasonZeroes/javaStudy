@@ -29,6 +29,16 @@
             <!--只有一个,不设置就会自动适应-->
             <el-table-column prop="name" label="名称">
             </el-table-column>
+
+            <el-table-column prop="sn" label="标识">
+            </el-table-column>
+
+            <el-table-column prop="dirPath" label="路径">
+            </el-table-column>
+
+            <el-table-column prop="state" label="状态" :formatter="stateFormatter">
+            </el-table-column>
+
             <el-table-column label="操作" width="150">
                 <template scope="scope">
                     <el-button size="small" @click="edit(scope.row)">编辑</el-button>
@@ -88,6 +98,13 @@
             }
         },
         methods: {
+            stateFormatter(row,column,cellVale,index){
+                if(cellVale == 0){
+                    return '正常'
+                } else {
+                    return '停用'
+                }
+            },
             handleCurrentChange(currentPage) {
                 this.page = currentPage;
                 this.getDepartments();
