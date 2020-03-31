@@ -39,6 +39,15 @@
             <el-table-column prop="state" label="状态" :formatter="stateFormatter">
             </el-table-column>
 
+            <el-table-column prop="manager.username" label="部门经理">
+            </el-table-column>
+
+            <el-table-column prop="parent.name" label="上级部门">
+            </el-table-column>
+
+            <el-table-column prop="tenant.companyName" label="公司">
+            </el-table-column>
+
             <el-table-column label="操作" width="150">
                 <template scope="scope">
                     <el-button size="small" @click="edit(scope.row)">编辑</el-button>
@@ -59,9 +68,38 @@
         <!--添加或编辑对话框-->
         <el-dialog title="编辑" v-model="formVisible" :close-on-click-modal="false">
             <el-form :model="department" label-width="80px" :rules="formRules" ref="department">
-                <el-form-item label="部门名称" prop="name">
+                <el-form-item label="名称" prop="name">
                     <el-input v-model="department.name" auto-complete="off"></el-input>
                 </el-form-item>
+
+                <el-form-item label="标识" prop="sn">
+                    <el-input v-model="department.sn" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="路径" prop="dirPath">
+                    <el-input v-model="department.dirPath" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="状态" prop="state">
+                    <el-radio-group v-model="department.state" size="medium">
+                        <el-radio border :label="0">正常</el-radio>
+                        <el-radio border :label="-1">停用</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item label="经理" prop="manager">
+                    <el-select v-model="department.manager" placeholder="请选择">
+                        <el-option
+                                v-for="item in employees"
+                                :key="item.value"
+                                :label="item.username"
+                                :value="item">
+                            <span style="float: left">{{ item.id }}</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="formVisible = false">取消</el-button>
@@ -89,6 +127,7 @@
                     id: null,
                     name: ''
                 },
+                employees:[],
                 // 表单检验规则
                 formRules: {
                     name: [
@@ -142,9 +181,22 @@
             add() {
                 this.department = {
                     id: null,
-                    name: ''
+                    name: '',
+                    sn:'',
+                    dirPath:'',
+                    state:0,
+                    manager:null,
+                    parentId:null
                 };
                 this.formVisible = true;
+                this.getEmployees();
+            },
+            getEmployees(){
+                this.$http.patch("/employee")
+                    .then(result => {
+                        console.log(result);
+                        this.employees = result.data;
+                    });
             },
             getDepartments() {
                 // 发送ajax请求,从后台获取数据 axios

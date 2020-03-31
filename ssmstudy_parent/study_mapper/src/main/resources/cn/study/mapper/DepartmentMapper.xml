@@ -40,19 +40,52 @@
     <sql id="whereSql">
         <where>
             <if test="keywords != null and keywords != ''">
-                and (sn like concat('%',#{keywords},'%') or name like concat('%',#{keywords},'%'))
+                and (d.sn like concat('%',#{keywords},'%') or d.name like concat('%',#{keywords},'%'))
             </if>
         </where>
     </sql>
     <select id="queryCount" parameterType="DepartmentQuery" resultType="long">
-        select count(*) from t_department
+        select count(*) from t_department d
         <include refid="whereSql"/>
     </select>
 
 
-    <select id="queryData" parameterType="DepartmentQuery" resultType="Department">
-        select * from t_department
+    <select id="queryData" parameterType="DepartmentQuery" resultMap="DepartmentMap">
+        select d.id,d.sn,d.name,d.dirPath,d.state,
+               e.id eid,e.username,
+               p.id pid,p.name pname,
+               t.id tid,t.companyName
+        from t_department d
+        left join t_employee e on d.manager_id = e.id
+        left join t_department p on d.parent_id = p.id
+        left join t_tenant t on d.tenant_id = t.id
         <include refid="whereSql"/>
         limit #{start},#{pageSize}
     </select>
+    
+    <resultMap id="DepartmentMap" type="Department">
+        <!--基本信息-->
+        <id property="id" column="id"></id>
+        <result property="sn" column="sn"></result>
+        <result property="state" column="state"></result>
+        <result property="name" column="name"></result>
+        <result property="dirPath" column="dirPath"></result>
+
+        <!--关联信息-->
+        <association property="manager" javaType="Employee">
+            <id property="id" column="eid"></id>
+            <result property="username" column="username"></result>
+        </association>
+        
+        <association property="parent" javaType="Department">
+            <id property="id" column="pid"></id>
+            <result property="name" column="pname"></result>
+        </association>
+        
+        <association property="tenant" javaType="Tenant">
+            <id property="id" column="tid"></id>
+            <result property="companyName" column="companyName"></result>
+        </association>
+    </resultMap>
+    
 </mapper>

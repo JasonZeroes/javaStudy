@@ -22,8 +22,12 @@ public class DepartmentServiceTest extends BaseTest{
 	public void testPage() throws Exception{
 		DepartmentQuery query = new DepartmentQuery();
 		PageList<Department> pageList = departmentService.query(query);
-		for (Department row : pageList.getRows()) {
-			System.out.println(row);
+		for (Department department : pageList.getRows()) {
+			System.out.println(department);
+			System.out.println(department.getManager());
+			System.out.println(department.getParent());
+			System.out.println(department.getTenant());
+
 		}
 	}
 
